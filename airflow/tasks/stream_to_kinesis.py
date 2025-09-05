@@ -15,16 +15,17 @@ def produce_timestamp():
 def stream_to_kinesis():
     firehose_hook = FirehoseHook(aws_conn_id='aws_conn_id', delivery_stream='click2cart-firehose-stream')
 
-    actions = ["view_product", "add_to_cart", "remove_from_cart", "search", "checkout_start"]
-    record = {
-        "event_id": str(uuid.uuid4()),
-        "user_id": random.randint(1, 100),
-        "product_id": random.randint(1, 35),
-        "event": random.choice(actions),
-        "timestamp": produce_timestamp()
-    }
 
     for i in range(200):
+        actions = ["view_product", "add_to_cart", "remove_from_cart", "search", "checkout_start"]
+        record  = {
+            "event_id": str(uuid.uuid4()),
+            "user_id": random.randint(1, 100),
+            "product_id": random.randint(1, 35),
+            "event": random.choice(actions),
+            "timestamp": produce_timestamp()
+        }
+    
         if i % 10 == 0:
             print(f"Iteration: {i}")
 
