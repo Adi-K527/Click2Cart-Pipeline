@@ -22,7 +22,7 @@ CREATE SCHEMA IF NOT EXISTS dev;
 
 USE SCHEMA raw;
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS raw_users (
     user_id INT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE IF NOT EXISTS raw_products (
     product_id INT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -39,15 +39,15 @@ CREATE TABLE IF NOT EXISTS products (
     created_at TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS orders (
+CREATE TABLE IF NOT EXISTS raw_orders (
     order_id INT PRIMARY KEY,
-    user_id INT REFERENCES users(user_id),
+    user_id INT,
     product_id INT NOT NULL,
     quantity INT NOT NULL,
     order_date TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS clickstreams (
+CREATE TABLE IF NOT EXISTS raw_clickstreams (
     data VARIANT
 );
 
@@ -67,15 +67,15 @@ CREATE OR REPLACE STAGE clickstream_stage
     url = "s3://click2cart-raw-data-bucket-6751/clickstream"
     FILE_FORMAT = json_ff
 
-COPY INTO users
+COPY INTO raw_users
 FROM @db_stage/users.csv
 FILE_FORMAT = (FORMAT_NAME = csv_ff);
 
-COPY INTO products
+COPY INTO raw_products
 FROM @db_stage/products.csv
 FILE_FORMAT = (FORMAT_NAME = csv_ff);
 
-COPY INTO orders
+COPY INTO raw_orders
 FROM @db_stage/orders.csv
 FILE_FORMAT = (FORMAT_NAME = csv_ff);
 
@@ -83,10 +83,10 @@ CREATE OR REPLACE PIPE clickstream_pipe
     AUTO_INGEST = TRUE
     AWS_SNS_TOPIC = 'arn:aws:sns:us-east-1:206479108282:s3_topic'
 AS
-    COPY INTO clickstreams
+    COPY INTO raw_clickstreams
     FROM @clickstream_stage/2025
     FILE_FORMAT = (FORMAT_NAME = json_ff);
 
-SELECT * FROM clickstreams;
+SELECT * FROM orders;
 
 DROP WAREHOUSE load_wh;
