@@ -40,3 +40,14 @@ resource "aws_s3_bucket_policy" "public_bucket_policy" {
   depends_on = [ aws_s3_bucket_public_access_block.public_access ]
 }
 
+resource "aws_s3_bucket_notification" "s3_notification" {
+  bucket = aws_s3_bucket.s3_bucket.id
+
+  topic {
+    topic_arn    = var.sns_arn
+    events       = ["s3:ObjectCreated:*"]
+    filter_prefix = "clickstream/2025/"  # only files in this folder
+  }
+
+  depends_on = [ aws_s3_bucket_policy.public_bucket_policy ]
+}

@@ -14,6 +14,8 @@ provider "aws" {
 module "raw_data_bucket" {
     source      = "./modules/S3"
     bucket_name = "click2cart-raw-data-bucket-6751"
+    sns_arn     = module.sns_s3_topic.arn
+    depends_on = [ module.sns_s3_topic ]
 }
 
 module "firehose" {
@@ -29,4 +31,16 @@ module "rds_instance" {
 
 module "sns_topic" {
   source   = "./modules/SNS"
+  topic_name = "click2cart-sns-topic"
+}
+
+resource "aws_sns_topic_subscription" "email_subscription" {
+  topic_arn = module.sns_topic.arn
+  protocol  = "email"
+  endpoint  = "robwindowski@gmail.com"
+}
+
+module "sns_s3_topic" {
+  source   = "./modules/SNS"
+  topic_name = "s3_topic"
 }
