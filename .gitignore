@@ -3,3 +3,4 @@
 click2cart-venv/
 __pycache__/
 logs/
+*.terraform*
