@@ -1,6 +1,6 @@
 USE ROLE ACCOUNTADMIN;
 
-CREATE RESOURCE MONITOR click2cart_rm WITH 
+CREATE RESOURCE MONITOR IF NOT EXISTS click2cart_rm WITH 
     CREDIT_QUOTA = 15
     FREQUENCY = 'DAILY'
     START_TIMESTAMP = IMMEDIATELY
@@ -16,6 +16,7 @@ CREATE WAREHOUSE IF NOT EXISTS load_wh
 
 
 USE WAREHOUSE load_wh;
+CREATE DATABASE IF NOT EXISTS click2cart;
 USE DATABASE click2cart;
 CREATE SCHEMA IF NOT EXISTS raw;
 CREATE SCHEMA IF NOT EXISTS dev;
@@ -59,13 +60,13 @@ CREATE OR REPLACE FILE FORMAT json_ff
     type = 'json'
     STRIP_OUTER_ARRAY = TRUE;
 
-CREATE STAGE IF NOT EXISTS db_stage
+CREATE OR REPLACE STAGE db_stage
     url = "s3://click2cart-raw-data-bucket-6751/customers_data"
     FILE_FORMAT = csv_ff;
 
 CREATE OR REPLACE STAGE clickstream_stage
     url = "s3://click2cart-raw-data-bucket-6751/clickstream"
-    FILE_FORMAT = json_ff
+    FILE_FORMAT = json_ff;
 
 COPY INTO raw_users
 FROM @db_stage/users.csv
@@ -86,7 +87,5 @@ AS
     COPY INTO raw_clickstreams
     FROM @clickstream_stage/2025
     FILE_FORMAT = (FORMAT_NAME = json_ff);
-
-SELECT * FROM orders;
 
 DROP WAREHOUSE load_wh;

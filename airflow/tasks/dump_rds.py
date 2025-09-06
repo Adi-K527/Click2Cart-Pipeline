@@ -22,7 +22,7 @@ def dump_rds_to_s3():
         local_csv = f"{local_file_path}/{table}.csv"
         with open(local_csv, 'w', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow(columns)  # header
+            writer.writerow(columns)
             writer.writerows(records)
 
         s3_hook.load_file(
