@@ -7,5 +7,5 @@ SELECT
     DATA['user_id']::INT AS user_id,
     DATA['product_id']::INT AS product_id,
     INITCAP(DATA['event'])::STRING AS action,
-    DATE_TRUNC('SECOND', DATA['timestamp']::TIMESTAMP_NTZ) AS timestamp,
+    DATE_TRUNC('SECOND', DATA['timestamp']::TIMESTAMP_NTZ) AS clickstream_timestamp,
 FROM raw.raw_clickstreams AS rc

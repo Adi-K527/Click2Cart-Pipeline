@@ -1,9 +1,9 @@
-WITH orders_staged AS (
-    SELECT * FROM {{ ref(src_orders) }}
-)
+WITH 
+orders_staged AS (
+    SELECT * FROM {{ ref("src_orders") }}
+),
 
-
-WITH orders_intermediate AS (
+orders_intermediate AS (
     SELECT 
         order_id,
         user_id,

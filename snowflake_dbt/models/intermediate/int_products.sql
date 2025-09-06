@@ -1,5 +1,5 @@
 WITH products_staged AS (
-    SELECT * FROM {{ ref(src_products) }}
+    SELECT * FROM {{ ref("src_products") }}
     WHERE stock > 0
 )
 

@@ -1,0 +1,109 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: Dimension table to store information about products being sold
+    columns:
+      - name: product_id
+        description: product id
+        tests:
+          - unique
+          - not_null
+      
+      - name: product_name
+        description: product name
+
+      - name: price
+        description: product price
+
+      - name: stock
+        description: amount stock in inventory
+
+      - name: total_inventory_value
+        description: price x stock
+            
+      - name: timestamp
+        description: product creation timestamp
+
+
+  - name: dim_users
+    description: Dimension table to store information about users
+    columns:
+      - name: user_id
+        description: user id
+        tests:
+          - unique
+          - not_null
+      
+      - name: username
+        description: username
+        tests:
+          - unique
+
+      - name: email
+        description: email
+        tests:
+          - unique
+
+      - name: timestamp
+        description: user creation timestamp
+  
+
+  - name: fact_clickstreams
+    description: Fact table representing users table joined with clickstreams table
+    columns:
+      - name: event_id
+        tests:
+          - unique
+      
+      - name: product_id
+        tests:
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+
+      - name: user_id
+        tests:
+          - relationships:
+              to: ref('dim_users')
+              field: user_id
+
+      - name: username
+
+      - name: action
+
+      - name: clickstream_timestamp
+
+
+  - name: fact_orders
+    description: Fact table representing orders table joined with products table
+    columns:
+      - name: order_id
+        tests:
+          - unique
+      
+      - name: user_id
+        tests:
+          - relationships:
+              to: ref('dim_users')
+              field: user_id
+
+      - name: product_id
+        tests:
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+
+      - name: order_date
+
+      - name: product_name
+
+      - name: price
+
+      - name: stock
+
+      - name: user_purchase_quantity
+
+      - name: total_price
+
+      - name: total_inventory_value
