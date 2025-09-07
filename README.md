@@ -1,4 +1,4 @@
-# Click2Cart-Pipeline
+# Click2Cart
 ---
 
 In this data engineering project, I aimed to build an ELT pipeline using AWS, Snowflake and DBT, with PowerBI at the final analysis stage. Artificially generated organizational data was used, and involved a users, products and orders table. Additionally, artificially generated clickstream data was produced in real time, and both the organizational data along with this clickstream data were used in this pipeline to gather insights and drive analytics.
@@ -20,3 +20,4 @@ This Airflow DAG consisted of 2 task groups. The first was the "extract_load" gr
 ### Conclusion
 ---
 Overall, this project served to offer fundamental experience in building an end-to-end ELT pipeline with AWS, Snowflake, and DBT.
+
